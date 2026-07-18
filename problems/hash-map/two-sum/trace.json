@@ -1,3 +1,6 @@
+{
+  "bruteForce": {
+    "code": [
       "class Solution {",
       "public:",
       "    std::vector<int> twoSum(std::vector<int>& nums, int target) {",
@@ -18,7 +21,7 @@
         "line": 4,
         "variables": {
           "i": 0,
-          "nums_i": 2
+          "nums_i": 3
         },
         "highlightIndices": [
           0
@@ -30,8 +33,8 @@
         "variables": {
           "i": 0,
           "j": 1,
-          "nums_i": 2,
-          "nums_j": 7
+          "nums_i": 3,
+          "nums_j": 2
         },
         "highlightIndices": [
           0,
@@ -44,26 +47,93 @@
         "variables": {
           "i": 0,
           "j": 1,
-          "sum": 9,
-          "target": 9
+          "sum": 5,
+          "target": 6
         },
         "highlightIndices": [
           0,
           1
         ],
-        "explanation": "Check if 2 + 7 equals 9."
+        "explanation": "Check if 3 + 2 equals 6."
+      },
+      {
+        "line": 5,
+        "variables": {
+          "i": 0,
+          "j": 2,
+          "nums_i": 3,
+          "nums_j": 4
+        },
+        "highlightIndices": [
+          0,
+          2
+        ],
+        "explanation": "Initialize inner loop with j = 2."
+      },
+      {
+        "line": 6,
+        "variables": {
+          "i": 0,
+          "j": 2,
+          "sum": 7,
+          "target": 6
+        },
+        "highlightIndices": [
+          0,
+          2
+        ],
+        "explanation": "Check if 3 + 4 equals 6."
+      },
+      {
+        "line": 4,
+        "variables": {
+          "i": 1,
+          "nums_i": 2
+        },
+        "highlightIndices": [
+          1
+        ],
+        "explanation": "Initialize outer loop with i = 1."
+      },
+      {
+        "line": 5,
+        "variables": {
+          "i": 1,
+          "j": 2,
+          "nums_i": 2,
+          "nums_j": 4
+        },
+        "highlightIndices": [
+          1,
+          2
+        ],
+        "explanation": "Initialize inner loop with j = 2."
+      },
+      {
+        "line": 6,
+        "variables": {
+          "i": 1,
+          "j": 2,
+          "sum": 6,
+          "target": 6
+        },
+        "highlightIndices": [
+          1,
+          2
+        ],
+        "explanation": "Check if 2 + 4 equals 6."
       },
       {
         "line": 7,
         "variables": {
-          "i": 0,
-          "j": 1
+          "i": 1,
+          "j": 2
         },
         "highlightIndices": [
-          0,
-          1
+          1,
+          2
         ],
-        "explanation": "Match found! 2 + 7 = 9."
+        "explanation": "Match found! 2 + 4 = 6."
       }
     ]
   },
@@ -90,151 +160,228 @@
     "complexity": "O(n)",
     "steps": [
       {
-        "line": 6,
+        "line": 7,
         "variables": {},
         "mapState": {},
         "highlightIndices": [],
         "explanation": "Initialize an empty hash map to store values and their indices."
       },
       {
-        "line": 7,
-        "variables": {
-          "i": 0,
-          "nums_i": 2
-        },
-        "mapState": {},
-        "highlightIndices": [
-          0
-        ],
-        "explanation": "Processing element at index 0: 2."
-      },
-      {
         "line": 8,
         "variables": {
           "i": 0,
-          "nums_i": 2,
-          "complement": 7
+          "nums_i": 3
         },
         "mapState": {},
         "highlightIndices": [
           0
         ],
-        "explanation": "Calculate complement: 9 - 2 = 7."
+        "explanation": "Processing element at index 0: 3."
       },
       {
         "line": 9,
         "variables": {
           "i": 0,
-          "complement": 7,
+          "nums_i": 3,
+          "complement": 3
+        },
+        "mapState": {},
+        "highlightIndices": [
+          0
+        ],
+        "explanation": "Calculate complement: 6 - 3 = 3."
+      },
+      {
+        "line": 10,
+        "variables": {
+          "i": 0,
+          "complement": 3,
           "found": false
         },
         "mapState": {},
         "highlightIndices": [
           0
         ],
-        "explanation": "Check if 7 exists in the map."
+        "explanation": "Check if 3 exists in the map."
       },
       {
-        "line": 12,
+        "line": 13,
         "variables": {
           "i": 0,
-          "nums_i": 2
+          "nums_i": 3
         },
         "mapState": {
-          "2": 0
+          "3": 0
         },
         "highlightIndices": [
           0
         ],
-        "explanation": "Store 2 with index 0 in the map for future lookups."
-      },
-      {
-        "line": 7,
-        "variables": {
-          "i": 1,
-          "nums_i": 7
-        },
-        "mapState": {
-          "2": 0
-        },
-        "highlightIndices": [
-          1
-        ],
-        "explanation": "Processing element at index 1: 7."
+        "explanation": "Store 3 with index 0 in the map for future lookups."
       },
       {
         "line": 8,
         "variables": {
           "i": 1,
-          "nums_i": 7,
-          "complement": 2
+          "nums_i": 2
         },
         "mapState": {
-          "2": 0
+          "3": 0
         },
         "highlightIndices": [
           1
         ],
-        "explanation": "Calculate complement: 9 - 7 = 2."
+        "explanation": "Processing element at index 1: 2."
       },
       {
         "line": 9,
         "variables": {
           "i": 1,
-          "complement": 2,
-          "found": true
+          "nums_i": 2,
+          "complement": 4
         },
         "mapState": {
-          "2": 0
+          "3": 0
         },
         "highlightIndices": [
           1
         ],
-        "explanation": "Check if 2 exists in the map."
+        "explanation": "Calculate complement: 6 - 2 = 4."
       },
       {
         "line": 10,
         "variables": {
           "i": 1,
-          "complement": 2,
-          "matchIndex": 0
+          "complement": 4,
+          "found": false
         },
         "mapState": {
-          "2": 0
+          "3": 0
         },
         "highlightIndices": [
-          0,
           1
         ],
-        "explanation": "Found complement 2 at index 0!"
+        "explanation": "Check if 4 exists in the map."
+      },
+      {
+        "line": 13,
+        "variables": {
+          "i": 1,
+          "nums_i": 2
+        },
+        "mapState": {
+          "3": 0,
+          "2": 1
+        },
+        "highlightIndices": [
+          1
+        ],
+        "explanation": "Store 2 with index 1 in the map for future lookups."
+      },
+      {
+        "line": 8,
+        "variables": {
+          "i": 2,
+          "nums_i": 4
+        },
+        "mapState": {
+          "3": 0,
+          "2": 1
+        },
+        "highlightIndices": [
+          2
+        ],
+        "explanation": "Processing element at index 2: 4."
+      },
+      {
+        "line": 9,
+        "variables": {
+          "i": 2,
+          "nums_i": 4,
+          "complement": 2
+        },
+        "mapState": {
+          "3": 0,
+          "2": 1
+        },
+        "highlightIndices": [
+          2
+        ],
+        "explanation": "Calculate complement: 6 - 4 = 2."
+      },
+      {
+        "line": 10,
+        "variables": {
+          "i": 2,
+          "complement": 2,
+          "found": true
+        },
+        "mapState": {
+          "3": 0,
+          "2": 1
+        },
+        "highlightIndices": [
+          2
+        ],
+        "explanation": "Check if 2 exists in the map."
+      },
+      {
+        "line": 11,
+        "variables": {
+          "i": 2,
+          "complement": 2,
+          "matchIndex": 1
+        },
+        "mapState": {
+          "3": 0,
+          "2": 1
+        },
+        "highlightIndices": [
+          1,
+          2
+        ],
+        "explanation": "Found complement 2 at index 1!"
       }
     ]
   },
   "discoveryQuestions": [
-    "Why is checking every pair of numbers inefficient for larger arrays?",
-    "If we've seen a number, what information do we need to remember about it to quickly find its complement?",
-    "How can a data structure help us quickly look up if a complement has been seen before?"
+    "Why does the brute-force approach require multiple checks even when the target is found early?",
+    "How does remembering previously seen numbers help in optimizing the search for the complement?",
+    "What are the trade-offs between the brute-force and optimized approaches in terms of time and space?"
   ],
   "predictionQuestions": [
     {
       "stepIndex": 2,
       "phase": "bruteForce",
-      "question": "What will be the sum of nums[i] and nums[j] in the next step?",
-      "options": ["9", "13", "17", "26"],
+      "question": "What will be the sum of nums[i] and nums[j] in this step?",
+      "options": ["5", "6", "7", "8"],
       "correctOptionIndex": 0
+    },
+    {
+      "stepIndex": 4,
+      "phase": "bruteForce",
+      "question": "What will be the sum of nums[i] and nums[j] in this step?",
+      "options": ["5", "6", "7", "8"],
+      "correctOptionIndex": 2
     },
     {
       "stepIndex": 3,
       "phase": "optimized",
-      "question": "Will the complement (7) be found in the map at this step?",
+      "question": "Will the complement (3) be found in the map at this step?",
       "options": ["Yes", "No"],
       "correctOptionIndex": 1
     },
     {
       "stepIndex": 8,
       "phase": "optimized",
-      "question": "What will be the value of 'complement' in the next step?",
-      "options": ["2", "7", "11", "15"],
+      "question": "Will the complement (4) be found in the map at this step?",
+      "options": ["Yes", "No"],
+      "correctOptionIndex": 1
+    },
+    {
+      "stepIndex": 12,
+      "phase": "optimized",
+      "question": "Will the complement (2) be found in the map at this step?",
+      "options": ["Yes", "No"],
       "correctOptionIndex": 0
     }
   ]
