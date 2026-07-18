@@ -1,0 +1,241 @@
+      "class Solution {",
+      "public:",
+      "    std::vector<int> twoSum(std::vector<int>& nums, int target) {",
+      "        for (int i = 0; i < nums.size(); i++) {",
+      "            for (int j = i + 1; j < nums.size(); j++) {",
+      "                if (nums[i] + nums[j] == target) {",
+      "                    return {i, j};",
+      "                }",
+      "            }",
+      "        }",
+      "        return {};",
+      "    }",
+      "};"
+    ],
+    "complexity": "O(n\u00b2)",
+    "steps": [
+      {
+        "line": 4,
+        "variables": {
+          "i": 0,
+          "nums_i": 2
+        },
+        "highlightIndices": [
+          0
+        ],
+        "explanation": "Initialize outer loop with i = 0."
+      },
+      {
+        "line": 5,
+        "variables": {
+          "i": 0,
+          "j": 1,
+          "nums_i": 2,
+          "nums_j": 7
+        },
+        "highlightIndices": [
+          0,
+          1
+        ],
+        "explanation": "Initialize inner loop with j = 1."
+      },
+      {
+        "line": 6,
+        "variables": {
+          "i": 0,
+          "j": 1,
+          "sum": 9,
+          "target": 9
+        },
+        "highlightIndices": [
+          0,
+          1
+        ],
+        "explanation": "Check if 2 + 7 equals 9."
+      },
+      {
+        "line": 7,
+        "variables": {
+          "i": 0,
+          "j": 1
+        },
+        "highlightIndices": [
+          0,
+          1
+        ],
+        "explanation": "Match found! 2 + 7 = 9."
+      }
+    ]
+  },
+  "optimized": {
+    "code": [
+      "#include <vector>",
+      "#include <unordered_map>",
+      "",
+      "class Solution {",
+      "public:",
+      "    std::vector<int> twoSum(std::vector<int>& nums, int target) {",
+      "        std::unordered_map<int, int> num_map;",
+      "        for (int i = 0; i < nums.size(); i++) {",
+      "            int complement = target - nums[i];",
+      "            if (num_map.find(complement) != num_map.end()) {",
+      "                return {num_map[complement], i};",
+      "            }",
+      "            num_map[nums[i]] = i;",
+      "        }",
+      "        return {};",
+      "    }",
+      "};"
+    ],
+    "complexity": "O(n)",
+    "steps": [
+      {
+        "line": 6,
+        "variables": {},
+        "mapState": {},
+        "highlightIndices": [],
+        "explanation": "Initialize an empty hash map to store values and their indices."
+      },
+      {
+        "line": 7,
+        "variables": {
+          "i": 0,
+          "nums_i": 2
+        },
+        "mapState": {},
+        "highlightIndices": [
+          0
+        ],
+        "explanation": "Processing element at index 0: 2."
+      },
+      {
+        "line": 8,
+        "variables": {
+          "i": 0,
+          "nums_i": 2,
+          "complement": 7
+        },
+        "mapState": {},
+        "highlightIndices": [
+          0
+        ],
+        "explanation": "Calculate complement: 9 - 2 = 7."
+      },
+      {
+        "line": 9,
+        "variables": {
+          "i": 0,
+          "complement": 7,
+          "found": false
+        },
+        "mapState": {},
+        "highlightIndices": [
+          0
+        ],
+        "explanation": "Check if 7 exists in the map."
+      },
+      {
+        "line": 12,
+        "variables": {
+          "i": 0,
+          "nums_i": 2
+        },
+        "mapState": {
+          "2": 0
+        },
+        "highlightIndices": [
+          0
+        ],
+        "explanation": "Store 2 with index 0 in the map for future lookups."
+      },
+      {
+        "line": 7,
+        "variables": {
+          "i": 1,
+          "nums_i": 7
+        },
+        "mapState": {
+          "2": 0
+        },
+        "highlightIndices": [
+          1
+        ],
+        "explanation": "Processing element at index 1: 7."
+      },
+      {
+        "line": 8,
+        "variables": {
+          "i": 1,
+          "nums_i": 7,
+          "complement": 2
+        },
+        "mapState": {
+          "2": 0
+        },
+        "highlightIndices": [
+          1
+        ],
+        "explanation": "Calculate complement: 9 - 7 = 2."
+      },
+      {
+        "line": 9,
+        "variables": {
+          "i": 1,
+          "complement": 2,
+          "found": true
+        },
+        "mapState": {
+          "2": 0
+        },
+        "highlightIndices": [
+          1
+        ],
+        "explanation": "Check if 2 exists in the map."
+      },
+      {
+        "line": 10,
+        "variables": {
+          "i": 1,
+          "complement": 2,
+          "matchIndex": 0
+        },
+        "mapState": {
+          "2": 0
+        },
+        "highlightIndices": [
+          0,
+          1
+        ],
+        "explanation": "Found complement 2 at index 0!"
+      }
+    ]
+  },
+  "discoveryQuestions": [
+    "Why is checking every pair of numbers inefficient for larger arrays?",
+    "If we've seen a number, what information do we need to remember about it to quickly find its complement?",
+    "How can a data structure help us quickly look up if a complement has been seen before?"
+  ],
+  "predictionQuestions": [
+    {
+      "stepIndex": 2,
+      "phase": "bruteForce",
+      "question": "What will be the sum of nums[i] and nums[j] in the next step?",
+      "options": ["9", "13", "17", "26"],
+      "correctOptionIndex": 0
+    },
+    {
+      "stepIndex": 3,
+      "phase": "optimized",
+      "question": "Will the complement (7) be found in the map at this step?",
+      "options": ["Yes", "No"],
+      "correctOptionIndex": 1
+    },
+    {
+      "stepIndex": 8,
+      "phase": "optimized",
+      "question": "What will be the value of 'complement' in the next step?",
+      "options": ["2", "7", "11", "15"],
+      "correctOptionIndex": 0
+    }
+  ]
+}
