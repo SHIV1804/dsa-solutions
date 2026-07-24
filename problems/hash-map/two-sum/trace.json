@@ -344,43 +344,51 @@
     ]
   },
   "discoveryQuestions": [
-    "Why does the brute-force approach require multiple checks even when the target is found early?",
-    "How does remembering previously seen numbers help in optimizing the search for the complement?",
-    "What are the trade-offs between the brute-force and optimized approaches in terms of time and space?"
+    "The brute-force approach made two failed comparisons (3+2=5\u22606 and 3+4=7\u22606) before finding the answer. Why did it waste work on those checks?",
+    "In the optimized approach, when i=2 (value 4), the complement is 2. The map already contains {3:0, 2:1}. Why does this allow us to find the answer immediately instead of re-scanning?",
+    "What is the fundamental trade-off: what extra resource does the optimized solution consume that the brute-force solution does not?",
+    "If the array were 1000 elements instead of 3, roughly how many comparisons would the brute-force approach make in the worst case versus the optimized approach?"
   ],
   "predictionQuestions": [
     {
       "stepIndex": 2,
       "phase": "bruteForce",
-      "question": "What will be the sum of nums[i] and nums[j] in this step?",
-      "options": ["5", "6", "7", "8"],
+      "question": "The algorithm is checking if nums[0] + nums[1] equals 6. Given that nums = [3, 2, 4], what is 3 + 2? Will this match the target?",
+      "options": ["5 \u2014 No, it does not match", "6 \u2014 Yes, it matches", "7 \u2014 No, it does not match", "8 \u2014 No, it does not match"],
       "correctOptionIndex": 0
     },
     {
       "stepIndex": 4,
       "phase": "bruteForce",
-      "question": "What will be the sum of nums[i] and nums[j] in this step?",
-      "options": ["5", "6", "7", "8"],
+      "question": "The algorithm is checking if nums[0] + nums[2] equals 6. Given that nums = [3, 2, 4], what is 3 + 4? Will this match the target?",
+      "options": ["5 \u2014 No, it does not match", "6 \u2014 Yes, it matches", "7 \u2014 No, it does not match", "8 \u2014 No, it does not match"],
       "correctOptionIndex": 2
+    },
+    {
+      "stepIndex": 7,
+      "phase": "bruteForce",
+      "question": "The algorithm is now checking nums[1] + nums[2]. Given nums = [3, 2, 4], what is 2 + 4? Will this match the target of 6?",
+      "options": ["5 \u2014 No, it does not match", "6 \u2014 Yes, it matches!", "7 \u2014 No, it does not match", "8 \u2014 No, it does not match"],
+      "correctOptionIndex": 1
     },
     {
       "stepIndex": 3,
       "phase": "optimized",
-      "question": "Will the complement (3) be found in the map at this step?",
+      "question": "The complement for nums[0]=3 is 3 itself. The map is currently empty. Will the algorithm find 3 in the map?",
       "options": ["Yes", "No"],
       "correctOptionIndex": 1
     },
     {
-      "stepIndex": 8,
+      "stepIndex": 7,
       "phase": "optimized",
-      "question": "Will the complement (4) be found in the map at this step?",
+      "question": "The complement for nums[1]=2 is 4. The map currently contains {3:0}. Will the algorithm find 4 in the map?",
       "options": ["Yes", "No"],
       "correctOptionIndex": 1
     },
     {
-      "stepIndex": 12,
+      "stepIndex": 11,
       "phase": "optimized",
-      "question": "Will the complement (2) be found in the map at this step?",
+      "question": "The complement for nums[2]=4 is 2. The map currently contains {3:0, 2:1}. Will the algorithm find 2 in the map?",
       "options": ["Yes", "No"],
       "correctOptionIndex": 0
     }
