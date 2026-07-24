@@ -18,3 +18,20 @@
 - Continue adding flagship features to other problems.
 
 ## D-1 -- synced, confirmed commit: [f75abf2]
+
+## D-2 -- Research Findings (Jul 19, 2026)
+- [x] Verified existing visualizers: `TwoPointersVisualizer`, `SlidingWindowVisualizer`, and `BinarySearchVisualizer` already exist in `widgets/dsa/ui/visualizers/`.
+- [x] Prop interface for visualizers:
+  ```typescript
+  interface VisualizerProps {
+    exampleInput: {
+      array: number[];
+      target?: number;
+      k?: number;
+    };
+  }
+  ```
+- [x] Checked `first-bad-version` in `dsa-solutions`:
+  - Problem exists in `problems/binary-search/first-bad-version`.
+  - `trace.json` is **NOT** present.
+  - Conclusion: A new `trace.json` must be authored for `first-bad-version` to support the flagship experience.
