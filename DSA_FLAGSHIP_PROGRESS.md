@@ -16,3 +16,5 @@
 ## Next Steps
 - **Chunk 2**: Implement step-by-step execution UI for brute-force and optimized algorithms.
 - Continue adding flagship features to other problems.
+
+## D-1 -- synced, confirmed commit: [f75abf2]
