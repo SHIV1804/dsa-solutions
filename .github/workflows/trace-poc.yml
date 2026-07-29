@@ -1,10 +1,10 @@
-
 name: Trace POC
 on: [push]
 jobs:
   check-gdb:
     runs-on: ubuntu-latest
     steps:
+      - name: Install GDB
+        run: sudo apt-get update && sudo apt-get install -y gdb
       - name: Check GDB Version
         run: gdb --version
-# trigger
