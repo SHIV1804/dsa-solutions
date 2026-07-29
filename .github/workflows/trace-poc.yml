@@ -1,0 +1,9 @@
+
+name: Trace POC
+on: [push]
+jobs:
+  check-gdb:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check GDB Version
+        run: gdb --version
