@@ -11,5 +11,6 @@ jobs:
       - name: Compile Solution
         run: |
           cd problems/hash-map/two-sum
+          echo -e "\nint main() { return 0; }" >> solution.cpp
           g++ -g -o twosum solution.cpp
           ls -la twosum
