@@ -4,7 +4,12 @@ jobs:
   check-gdb:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
       - name: Install GDB
         run: sudo apt-get update && sudo apt-get install -y gdb
-      - name: Check GDB Version
-        run: gdb --version
+      - name: Compile Solution
+        run: |
+          cd problems/hash-map/two-sum
+          g++ -g -o twosum solution.cpp
+          ls -la twosum
