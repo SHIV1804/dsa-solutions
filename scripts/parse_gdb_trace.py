@@ -76,7 +76,8 @@ BREAKPOINT_MANIFESTS = {
 # Breakpoints hit exactly once, at the return/match line, print a
 # shorter list (this repo's workflow prints fewer values there).
 FINAL_BREAKPOINT_MANIFESTS = {
-    "solution.cpp": ["i", "complement"],
+    # print i / print complement / print (int)num_map[complement]
+    "solution.cpp": ["i", "complement", "matchIndex"],
     "bruteforce_driver.cpp": ["i", "j"],
 }
 
@@ -304,13 +305,18 @@ def build_optimized_section(problem_dir):
         relative_line = hit["line"]
 
         highlight_indices = []
-        if "i" in values:
+        if hit["line"] == final_line_abs and "matchIndex" in values:
+            # Matches trace.json's convention for the final step: the
+            # matched (earlier) index first, then the current index.
+            highlight_indices = [values["matchIndex"], values["i"]]
+        elif "i" in values:
             highlight_indices.append(values["i"])
 
         if hit["line"] == final_line_abs:
             explanation = (
                 f"Match found at i={values.get('i')}: complement "
-                f"{values.get('complement')} was already in the map."
+                f"{values.get('complement')} was already in the map "
+                f"at index {values.get('matchIndex')}."
             )
         else:
             explanation = (
