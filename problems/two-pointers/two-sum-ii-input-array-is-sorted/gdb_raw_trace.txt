@@ -1,0 +1,33 @@
+Breakpoint 1 at 0x1559: file driver.cpp, line 23.
+Breakpoint 2 at 0x1594: file driver.cpp, line 26.
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Breakpoint 1, Solution::twoSum (this=0x7fffffffd3bb, numbers=std::vector of length 4, capacity 4 = {...}, target=9) at driver.cpp:23
+23	            int currentSum = numbers[left] + numbers[right];
+$1 = 0
+$2 = 3
+$3 = 2
+$4 = 15
+$5 = 17
+
+Breakpoint 1, Solution::twoSum (this=0x7fffffffd3bb, numbers=std::vector of length 4, capacity 4 = {...}, target=9) at driver.cpp:23
+23	            int currentSum = numbers[left] + numbers[right];
+$6 = 0
+$7 = 2
+$8 = 2
+$9 = 11
+$10 = 13
+
+Breakpoint 1, Solution::twoSum (this=0x7fffffffd3bb, numbers=std::vector of length 4, capacity 4 = {...}, target=9) at driver.cpp:23
+23	            int currentSum = numbers[left] + numbers[right];
+$11 = 0
+$12 = 1
+$13 = 2
+$14 = 7
+$15 = 9
+
+Breakpoint 2, Solution::twoSum (this=0x7fffffffd3bb, numbers=std::vector of length 4, capacity 4 = {...}, target=9) at driver.cpp:26
+26	                return {left + 1, right + 1}; // 1-indexed
+$16 = 0
+$17 = 1
