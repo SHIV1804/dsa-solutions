@@ -1,5 +1,7 @@
 name: Trace POC
 on: [push]
+permissions:
+  contents: write
 jobs:
   check-gdb:
     runs-on: ubuntu-latest
@@ -16,4 +18,32 @@ jobs:
       - name: Inspect nums with GDB
         run: |
           cd problems/hash-map/two-sum
-          gdb -batch -ex "break main" -ex "run" -ex "next" -ex "next" -ex "print nums" ./twosum
+          rm -f gdb_raw_trace.txt
+          gdb -batch \
+            -ex "set logging file gdb_raw_trace.txt" \
+            -ex "set logging enabled on" \
+            -ex "break solution.cpp:9" \
+            -ex "break solution.cpp:11" \
+            -ex "run" \
+            -ex "print i" -ex "print nums[i]" -ex "print target - nums[i]" \
+            -ex "continue" \
+            -ex "print i" -ex "print nums[i]" -ex "print target - nums[i]" \
+            -ex "continue" \
+            -ex "print i" -ex "print nums[i]" -ex "print target - nums[i]" \
+            -ex "continue" \
+            -ex "print i" -ex "print complement" \
+            ./twosum
+          echo "--- gdb_raw_trace.txt contents ---"
+          cat gdb_raw_trace.txt
+      - name: Commit and push GDB trace
+        run: |
+          cd problems/hash-map/two-sum
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add gdb_raw_trace.txt
+          if git diff --staged --quiet; then
+            echo "No changes to gdb_raw_trace.txt, skipping commit."
+          else
+            git commit -m "chore: update GDB raw trace output [skip ci]"
+            git push
+          fi
