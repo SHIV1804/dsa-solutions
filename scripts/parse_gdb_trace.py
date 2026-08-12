@@ -56,6 +56,14 @@ import sys
 # documents the *command sequence* already committed in
 # .github/workflows/trace-poc.yml.
 #
+# Keyed by (problem_dir, source_filename) rather than just filename:
+# multiple problems can reasonably use the same driver filename (e.g.
+# plain "driver.cpp"), and a filename-only key would silently
+# mislabel one problem's GDB output using another problem's variable
+# names. This was a real latent bug in the single-problem version of
+# this script, only surfaced once a second problem (Two Sum II) was
+# actually run through the pipeline.
+#
 # New problems need their own manifest entry here (see
 # problems/GDB_TRACE_PIPELINE.md) -- this is the one part of the
 # pipeline that is inherently problem-specific, since different
@@ -63,13 +71,17 @@ import sys
 # ---------------------------------------------------------------------------
 
 BREAKPOINT_MANIFESTS = {
-    "solution.cpp": {
+    ("problems/hash-map/two-sum", "solution.cpp"): {
         # print i / print nums[i] / print target - nums[i]
         "vars_by_hit_order": ["i", "nums_i", "complement"],
     },
-    "bruteforce_driver.cpp": {
+    ("problems/hash-map/two-sum", "bruteforce_driver.cpp"): {
         # print i / print j / print nums[i] / print nums[j]
         "vars_by_hit_order": ["i", "j", "nums_i", "nums_j"],
+    },
+    ("problems/two-pointers/two-sum-ii-input-array-is-sorted", "driver.cpp"): {
+        # print left / print right / print numbers[left] / print numbers[right] / print numbers[left]+numbers[right]
+        "vars_by_hit_order": ["left", "right", "numbers_left", "numbers_right", "sum"],
     },
 }
 
@@ -77,8 +89,9 @@ BREAKPOINT_MANIFESTS = {
 # shorter list (this repo's workflow prints fewer values there).
 FINAL_BREAKPOINT_MANIFESTS = {
     # print i / print complement / print (int)num_map[complement]
-    "solution.cpp": ["i", "complement", "matchIndex"],
-    "bruteforce_driver.cpp": ["i", "j"],
+    ("problems/hash-map/two-sum", "solution.cpp"): ["i", "complement", "matchIndex"],
+    ("problems/hash-map/two-sum", "bruteforce_driver.cpp"): ["i", "j"],
+    ("problems/two-pointers/two-sum-ii-input-array-is-sorted", "driver.cpp"): ["left", "right"],
 }
 
 
@@ -137,12 +150,13 @@ def parse_gdb_log(path):
     return hits
 
 
-def label_hit(hit, manifests, final_manifests, final_line):
+def label_hit(hit, problem_dir, manifests, final_manifests, final_line):
     """Attaches variable names to a hit's raw printed values, using the
-    manifest for whichever source file the breakpoint was in. Returns
-    a dict of {name: value}."""
-    manifest = manifests.get(hit["file"])
-    final_names = final_manifests.get(hit["file"])
+    manifest for this problem + whichever source file the breakpoint
+    was in. Returns a dict of {name: value}."""
+    key = (problem_dir, hit["file"])
+    manifest = manifests.get(key)
+    final_names = final_manifests.get(key)
 
     if hit["line"] == final_line and final_names is not None:
         names = final_names
@@ -233,7 +247,7 @@ def build_bruteforce_section(problem_dir, class_offset):
     steps = []
     for hit in hits:
         values = label_hit(
-            hit, BREAKPOINT_MANIFESTS, FINAL_BREAKPOINT_MANIFESTS, final_line_abs
+            hit, problem_dir, BREAKPOINT_MANIFESTS, FINAL_BREAKPOINT_MANIFESTS, final_line_abs
         )
         relative_line = hit["line"] - class_offset + 1  # +1: code array is 1-indexed
 
@@ -276,21 +290,40 @@ def build_bruteforce_section(problem_dir, class_offset):
 
 
 def build_optimized_section(problem_dir):
-    solution_path = os.path.join(problem_dir, "solution.cpp")
     trace_path = os.path.join(problem_dir, "gdb_raw_trace.txt")
-
-    if not os.path.exists(solution_path) or not os.path.exists(trace_path):
+    if not os.path.exists(trace_path):
         return None
-
-    with open(solution_path, "r") as f:
-        code = [l.rstrip("\n") for l in f.readlines()]
-        # Drop a single fully-blank trailing line, if present, to match
-        # trace.json's convention (no trailing empty-string entry).
-        while code and code[-1] == "":
-            code.pop()
 
     hits = parse_gdb_log(trace_path)
     if not hits:
+        return None
+
+    # Which actual source file the breakpoints landed in tells us how
+    # to build the "code" array: either the whole solution.cpp file
+    # verbatim (the normal case, where driver.cpp #includes it), or --
+    # when solution.cpp can't be #include-d directly (e.g. it doesn't
+    # compile as committed) -- the class block extracted from
+    # driver.cpp itself, same technique already used for bruteForce.
+    source_file = hits[0]["file"]
+    solution_path = os.path.join(problem_dir, "solution.cpp")
+    driver_path = os.path.join(problem_dir, "driver.cpp")
+
+    class_offset = 0  # only used when source_file == driver.cpp
+    if source_file == "solution.cpp" and os.path.exists(solution_path):
+        with open(solution_path, "r") as f:
+            code = [l.rstrip("\n") for l in f.readlines()]
+        while code and code[-1] == "":
+            code.pop()
+    elif source_file == "driver.cpp" and os.path.exists(driver_path):
+        code = extract_class_block(driver_path)
+        if code is None:
+            return None
+        with open(driver_path, "r") as f:
+            for idx, line in enumerate(f.readlines()):
+                if line.strip().startswith("class Solution"):
+                    class_offset = idx + 1  # 1-indexed line of "class Solution {"
+                    break
+    else:
         return None
 
     final_line_abs = max(h["line"] for h in hits)
@@ -298,31 +331,50 @@ def build_optimized_section(problem_dir):
     steps = []
     for hit in hits:
         values = label_hit(
-            hit, BREAKPOINT_MANIFESTS, FINAL_BREAKPOINT_MANIFESTS, final_line_abs
+            hit, problem_dir, BREAKPOINT_MANIFESTS, FINAL_BREAKPOINT_MANIFESTS, final_line_abs
         )
-        # solution.cpp's own line numbers already match the "code"
-        # array 1:1, since the code array is the whole file verbatim.
-        relative_line = hit["line"]
+
+        if source_file == "solution.cpp":
+            # solution.cpp's own line numbers already match the "code"
+            # array 1:1, since the code array is the whole file verbatim.
+            relative_line = hit["line"]
+        else:
+            relative_line = hit["line"] - class_offset + 1
 
         highlight_indices = []
-        if hit["line"] == final_line_abs and "matchIndex" in values:
-            # Matches trace.json's convention for the final step: the
-            # matched (earlier) index first, then the current index.
-            highlight_indices = [values["matchIndex"], values["i"]]
-        elif "i" in values:
-            highlight_indices.append(values["i"])
+        explanation = ""
 
-        if hit["line"] == final_line_abs:
+        if "matchIndex" in values:
+            # Hash-map style final match: earlier matched index, then
+            # the current index.
+            highlight_indices = [values["matchIndex"], values.get("i")]
             explanation = (
                 f"Match found at i={values.get('i')}: complement "
                 f"{values.get('complement')} was already in the map "
                 f"at index {values.get('matchIndex')}."
             )
-        else:
+        elif "complement" in values:
+            highlight_indices = [values.get("i")]
             explanation = (
                 f"At i={values.get('i')} (nums[i]={values.get('nums_i')}), "
                 f"complement = {values.get('complement')}."
             )
+        elif "left" in values and "right" in values:
+            # Two-pointer style.
+            highlight_indices = [values["left"], values["right"]]
+            if hit["line"] == final_line_abs:
+                explanation = (
+                    f"Match found: numbers[left={values['left']}] + "
+                    f"numbers[right={values['right']}] equals the target."
+                )
+            else:
+                explanation = (
+                    f"Comparing numbers[left={values['left']}]="
+                    f"{values.get('numbers_left')} + "
+                    f"numbers[right={values['right']}]="
+                    f"{values.get('numbers_right')} = {values.get('sum')} "
+                    f"against the target."
+                )
 
         steps.append(
             {
