@@ -43,7 +43,7 @@ jobs:
             -ex "continue" \
             -ex "print i" -ex "print nums[i]" -ex "print target - nums[i]" \
             -ex "continue" \
-            -ex "print i" -ex "print complement" \
+            -ex "print i" -ex "print complement" -ex "print (int)num_map[complement]" \
             ./twosum
           echo "--- gdb_raw_trace.txt contents ---"
           cat gdb_raw_trace.txt
