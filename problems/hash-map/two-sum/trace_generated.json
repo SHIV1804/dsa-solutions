@@ -138,12 +138,14 @@
         "line": 11,
         "variables": {
           "i": 2,
-          "complement": 2
+          "complement": 2,
+          "matchIndex": 1
         },
         "highlightIndices": [
+          1,
           2
         ],
-        "explanation": "Match found at i=2: complement 2 was already in the map."
+        "explanation": "Match found at i=2: complement 2 was already in the map at index 1."
       }
     ]
   }
