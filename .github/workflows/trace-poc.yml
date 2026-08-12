@@ -1,10 +1,22 @@
 name: Trace POC
-on: [push]
+on:
+  push:
+  workflow_dispatch:
+    inputs:
+      problem_path:
+        description: "Path to the problem directory (e.g. problems/hash-map/two-sum)"
+        required: false
+        default: "problems/hash-map/two-sum"
 permissions:
   contents: write
 jobs:
   check-gdb:
     runs-on: ubuntu-latest
+    env:
+      # Falls back to the two-sum path for ordinary push events, which
+      # have no workflow_dispatch inputs. Manual "Run workflow" runs
+      # can override this to point at a different problem.
+      PROBLEM_PATH: ${{ github.event.inputs.problem_path || 'problems/hash-map/two-sum' }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -12,12 +24,12 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y gdb
       - name: Compile Driver
         run: |
-          cd problems/hash-map/two-sum
+          cd "$PROBLEM_PATH"
           g++ -g -o twosum driver.cpp
           ls -la twosum
       - name: Inspect nums with GDB
         run: |
-          cd problems/hash-map/two-sum
+          cd "$PROBLEM_PATH"
           rm -f gdb_raw_trace.txt
           gdb -batch \
             -ex "set logging file gdb_raw_trace.txt" \
@@ -37,7 +49,7 @@ jobs:
           cat gdb_raw_trace.txt
       - name: Commit and push GDB trace
         run: |
-          cd problems/hash-map/two-sum
+          cd "$PROBLEM_PATH"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add gdb_raw_trace.txt
@@ -49,12 +61,12 @@ jobs:
           fi
       - name: Compile Brute-Force Driver
         run: |
-          cd problems/hash-map/two-sum
+          cd "$PROBLEM_PATH"
           g++ -g -o bruteforce bruteforce_driver.cpp
           ls -la bruteforce
       - name: Inspect brute-force nested loop with GDB
         run: |
-          cd problems/hash-map/two-sum
+          cd "$PROBLEM_PATH"
           rm -f gdb_raw_trace_bruteforce.txt
           gdb -batch \
             -ex "set logging file gdb_raw_trace_bruteforce.txt" \
@@ -74,7 +86,7 @@ jobs:
           cat gdb_raw_trace_bruteforce.txt
       - name: Commit and push brute-force GDB trace
         run: |
-          cd problems/hash-map/two-sum
+          cd "$PROBLEM_PATH"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add gdb_raw_trace_bruteforce.txt
