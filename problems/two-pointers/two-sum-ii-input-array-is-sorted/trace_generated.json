@@ -1,0 +1,87 @@
+{
+  "optimized": {
+    "code": [
+      "class Solution {",
+      "public:",
+      "    std::vector<int> twoSum(std::vector<int>& numbers, int target) {",
+      "        int left = 0;",
+      "        int right = numbers.size() - 1;",
+      "",
+      "        while (left < right) {",
+      "            int currentSum = numbers[left] + numbers[right];",
+      "",
+      "            if (currentSum == target) {",
+      "                return {left + 1, right + 1}; // 1-indexed",
+      "            } else if (currentSum < target) {",
+      "                left++;",
+      "            } else {",
+      "                right--;",
+      "            }",
+      "        }",
+      "",
+      "        return {};",
+      "    }",
+      "};"
+    ],
+    "complexity": "O(n)",
+    "steps": [
+      {
+        "line": 8,
+        "variables": {
+          "left": 0,
+          "right": 3,
+          "numbers_left": 2,
+          "numbers_right": 15,
+          "sum": 17
+        },
+        "highlightIndices": [
+          0,
+          3
+        ],
+        "explanation": "Comparing numbers[left=0]=2 + numbers[right=3]=15 = 17 against the target."
+      },
+      {
+        "line": 8,
+        "variables": {
+          "left": 0,
+          "right": 2,
+          "numbers_left": 2,
+          "numbers_right": 11,
+          "sum": 13
+        },
+        "highlightIndices": [
+          0,
+          2
+        ],
+        "explanation": "Comparing numbers[left=0]=2 + numbers[right=2]=11 = 13 against the target."
+      },
+      {
+        "line": 8,
+        "variables": {
+          "left": 0,
+          "right": 1,
+          "numbers_left": 2,
+          "numbers_right": 7,
+          "sum": 9
+        },
+        "highlightIndices": [
+          0,
+          1
+        ],
+        "explanation": "Comparing numbers[left=0]=2 + numbers[right=1]=7 = 9 against the target."
+      },
+      {
+        "line": 11,
+        "variables": {
+          "left": 0,
+          "right": 1
+        },
+        "highlightIndices": [
+          0,
+          1
+        ],
+        "explanation": "Match found: numbers[left=0] + numbers[right=1] equals the target."
+      }
+    ]
+  }
+}
