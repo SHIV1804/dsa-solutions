@@ -8,9 +8,12 @@ jobs:
         uses: actions/checkout@v4
       - name: Install GDB
         run: sudo apt-get update && sudo apt-get install -y gdb
-      - name: Compile Solution
+      - name: Compile Driver
         run: |
           cd problems/hash-map/two-sum
-          echo -e "\nint main() { return 0; }" >> solution.cpp
-          g++ -g -o twosum solution.cpp
+          g++ -g -o twosum driver.cpp
           ls -la twosum
+      - name: Inspect nums with GDB
+        run: |
+          cd problems/hash-map/two-sum
+          gdb -batch -ex "break main" -ex "run" -ex "next" -ex "next" -ex "print nums" ./twosum
