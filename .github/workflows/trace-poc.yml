@@ -31,20 +31,37 @@ jobs:
         run: |
           cd "$PROBLEM_PATH"
           rm -f gdb_raw_trace.txt
-          gdb -batch \
-            -ex "set logging file gdb_raw_trace.txt" \
-            -ex "set logging enabled on" \
-            -ex "break solution.cpp:9" \
-            -ex "break solution.cpp:11" \
-            -ex "run" \
-            -ex "print i" -ex "print nums[i]" -ex "print target - nums[i]" \
-            -ex "continue" \
-            -ex "print i" -ex "print nums[i]" -ex "print target - nums[i]" \
-            -ex "continue" \
-            -ex "print i" -ex "print nums[i]" -ex "print target - nums[i]" \
-            -ex "continue" \
-            -ex "print i" -ex "print complement" -ex "print (int)num_map[complement]" \
-            ./twosum
+          if [ "$PROBLEM_PATH" = "problems/two-pointers/two-sum-ii-input-array-is-sorted" ]; then
+            gdb -batch \
+              -ex "set logging file gdb_raw_trace.txt" \
+              -ex "set logging enabled on" \
+              -ex "break driver.cpp:23" \
+              -ex "break driver.cpp:26" \
+              -ex "run" \
+              -ex "print left" -ex "print right" -ex "print numbers[left]" -ex "print numbers[right]" -ex "print numbers[left] + numbers[right]" \
+              -ex "continue" \
+              -ex "print left" -ex "print right" -ex "print numbers[left]" -ex "print numbers[right]" -ex "print numbers[left] + numbers[right]" \
+              -ex "continue" \
+              -ex "print left" -ex "print right" -ex "print numbers[left]" -ex "print numbers[right]" -ex "print numbers[left] + numbers[right]" \
+              -ex "continue" \
+              -ex "print left" -ex "print right" \
+              ./twosum
+          else
+            gdb -batch \
+              -ex "set logging file gdb_raw_trace.txt" \
+              -ex "set logging enabled on" \
+              -ex "break solution.cpp:9" \
+              -ex "break solution.cpp:11" \
+              -ex "run" \
+              -ex "print i" -ex "print nums[i]" -ex "print target - nums[i]" \
+              -ex "continue" \
+              -ex "print i" -ex "print nums[i]" -ex "print target - nums[i]" \
+              -ex "continue" \
+              -ex "print i" -ex "print nums[i]" -ex "print target - nums[i]" \
+              -ex "continue" \
+              -ex "print i" -ex "print complement" -ex "print (int)num_map[complement]" \
+              ./twosum
+          fi
           echo "--- gdb_raw_trace.txt contents ---"
           cat gdb_raw_trace.txt
       - name: Commit and push GDB trace
@@ -62,11 +79,19 @@ jobs:
       - name: Compile Brute-Force Driver
         run: |
           cd "$PROBLEM_PATH"
-          g++ -g -o bruteforce bruteforce_driver.cpp
-          ls -la bruteforce
+          if [ -f bruteforce_driver.cpp ]; then
+            g++ -g -o bruteforce bruteforce_driver.cpp
+            ls -la bruteforce
+          else
+            echo "No bruteforce_driver.cpp for this problem, skipping."
+          fi
       - name: Inspect brute-force nested loop with GDB
         run: |
           cd "$PROBLEM_PATH"
+          if [ ! -f bruteforce_driver.cpp ]; then
+            echo "No bruteforce_driver.cpp for this problem, skipping."
+            exit 0
+          fi
           rm -f gdb_raw_trace_bruteforce.txt
           gdb -batch \
             -ex "set logging file gdb_raw_trace_bruteforce.txt" \
@@ -87,6 +112,10 @@ jobs:
       - name: Commit and push brute-force GDB trace
         run: |
           cd "$PROBLEM_PATH"
+          if [ ! -f bruteforce_driver.cpp ]; then
+            echo "No bruteforce_driver.cpp for this problem, skipping."
+            exit 0
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add gdb_raw_trace_bruteforce.txt
