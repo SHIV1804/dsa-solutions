@@ -83,5 +83,7 @@
         "explanation": "Match found: numbers[left=0] + numbers[right=1] equals the target."
       }
     ]
-  }
+  },
+  "discoveryQuestions": [],
+  "predictionQuestions": []
 }
