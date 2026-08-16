@@ -1,0 +1,232 @@
+name: Generate Traces
+
+# Two ways to run this:
+#   1. push to main touching one of the WATCHED solution.cpp files below --
+#      runs automatically, only for the problem(s) that actually changed.
+#   2. workflow_dispatch -- manual re-run for any problem (including a
+#      brand-new one not yet in the push-path list below), via the
+#      problem_path input.
+#
+# The push trigger is intentionally scoped to a fixed, explicit list of
+# solution.cpp paths -- NOT every problem folder -- so that adding a new,
+# not-yet-wired-up problem never silently starts running (and pushing)
+# GDB output for a driver.cpp / breakpoint setup that doesn't exist yet.
+# See problems/GDB_TRACE_PIPELINE.md for what's involved in wiring up a
+# new problem; once that's done, add its solution.cpp path to the list
+# below to opt it into auto-trace-on-push.
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'problems/hash-map/two-sum/solution.cpp'
+      - 'problems/two-pointers/two-sum-ii-input-array-is-sorted/solution.cpp'
+  workflow_dispatch:
+    inputs:
+      problem_path:
+        description: "Path to the problem directory (e.g. problems/hash-map/two-sum)"
+        required: false
+        default: "problems/hash-map/two-sum"
+
+permissions:
+  contents: write
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Determine which watched problem(s) changed
+        id: set-matrix
+        run: |
+          set -e
+
+          # Keep this list in sync with the `on.push.paths` list above.
+          WATCHED_SOLUTIONS=(
+            "problems/hash-map/two-sum/solution.cpp"
+            "problems/two-pointers/two-sum-ii-input-array-is-sorted/solution.cpp"
+          )
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            # Manual dispatch always targets exactly the requested problem,
+            # even if it's not one of the watched push paths above -- this
+            # is the escape hatch for a future/unconfigured problem.
+            PROBLEM_PATH="${{ github.event.inputs.problem_path }}"
+            echo "matrix=[\"$PROBLEM_PATH\"]" >> "$GITHUB_OUTPUT"
+            echo "workflow_dispatch run requested for: $PROBLEM_PATH"
+            exit 0
+          fi
+
+          CHANGED=$(git diff --name-only "${{ github.event.before }}" "${{ github.event.after }}" || true)
+          echo "Changed files in this push:"
+          echo "$CHANGED"
+
+          MATCHED_DIRS=()
+          for sol in "${WATCHED_SOLUTIONS[@]}"; do
+            if echo "$CHANGED" | grep -qxF "$sol"; then
+              MATCHED_DIRS+=("$(dirname "$sol")")
+            fi
+          done
+
+          if [ "${#MATCHED_DIRS[@]}" -eq 0 ]; then
+            echo "matrix=[]" >> "$GITHUB_OUTPUT"
+            echo "No watched solution.cpp changed in this push; nothing to trace."
+            exit 0
+          fi
+
+          JSON="["
+          first=true
+          for d in "${MATCHED_DIRS[@]}"; do
+            if [ "$first" = true ]; then first=false; else JSON="$JSON,"; fi
+            JSON="$JSON\"$d\""
+          done
+          JSON="$JSON]"
+          echo "matrix=$JSON" >> "$GITHUB_OUTPUT"
+          echo "Matched problem dir(s) for this push: $JSON"
+
+  trace:
+    needs: detect
+    if: needs.detect.outputs.matrix != '[]'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        problem_path: ${{ fromJson(needs.detect.outputs.matrix) }}
+    env:
+      PROBLEM_PATH: ${{ matrix.problem_path }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install GDB
+        run: sudo apt-get update && sudo apt-get install -y gdb
+
+      - name: Compile Driver
+        run: |
+          cd "$PROBLEM_PATH"
+          g++ -g -o twosum driver.cpp
+          ls -la twosum
+
+      - name: Inspect nums with GDB
+        run: |
+          cd "$PROBLEM_PATH"
+          rm -f gdb_raw_trace.txt
+          if [ "$PROBLEM_PATH" = "problems/two-pointers/two-sum-ii-input-array-is-sorted" ]; then
+            gdb -batch \
+              -ex "set logging file gdb_raw_trace.txt" \
+              -ex "set logging enabled on" \
+              -ex "break driver.cpp:23" \
+              -ex "break driver.cpp:26" \
+              -ex "run" \
+              -ex "print left" -ex "print right" -ex "print numbers[left]" -ex "print numbers[right]" -ex "print numbers[left] + numbers[right]" \
+              -ex "continue" \
+              -ex "print left" -ex "print right" -ex "print numbers[left]" -ex "print numbers[right]" -ex "print numbers[left] + numbers[right]" \
+              -ex "continue" \
+              -ex "print left" -ex "print right" -ex "print numbers[left]" -ex "print numbers[right]" -ex "print numbers[left] + numbers[right]" \
+              -ex "continue" \
+              -ex "print left" -ex "print right" \
+              ./twosum
+          else
+            gdb -batch \
+              -ex "set logging file gdb_raw_trace.txt" \
+              -ex "set logging enabled on" \
+              -ex "break solution.cpp:9" \
+              -ex "break solution.cpp:11" \
+              -ex "run" \
+              -ex "print i" -ex "print nums[i]" -ex "print target - nums[i]" \
+              -ex "continue" \
+              -ex "print i" -ex "print nums[i]" -ex "print target - nums[i]" \
+              -ex "continue" \
+              -ex "print i" -ex "print nums[i]" -ex "print target - nums[i]" \
+              -ex "continue" \
+              -ex "print i" -ex "print complement" -ex "print (int)num_map[complement]" \
+              ./twosum
+          fi
+          echo "--- gdb_raw_trace.txt contents ---"
+          cat gdb_raw_trace.txt
+
+      - name: Compile Brute-Force Driver
+        run: |
+          cd "$PROBLEM_PATH"
+          if [ -f bruteforce_driver.cpp ]; then
+            g++ -g -o bruteforce bruteforce_driver.cpp
+            ls -la bruteforce
+          else
+            echo "No bruteforce_driver.cpp for this problem, skipping."
+          fi
+
+      - name: Inspect brute-force nested loop with GDB
+        run: |
+          cd "$PROBLEM_PATH"
+          if [ ! -f bruteforce_driver.cpp ]; then
+            echo "No bruteforce_driver.cpp for this problem, skipping."
+            exit 0
+          fi
+          rm -f gdb_raw_trace_bruteforce.txt
+          gdb -batch \
+            -ex "set logging file gdb_raw_trace_bruteforce.txt" \
+            -ex "set logging enabled on" \
+            -ex "break bruteforce_driver.cpp:14" \
+            -ex "break bruteforce_driver.cpp:15" \
+            -ex "run" \
+            -ex "print i" -ex "print j" -ex "print nums[i]" -ex "print nums[j]" \
+            -ex "continue" \
+            -ex "print i" -ex "print j" -ex "print nums[i]" -ex "print nums[j]" \
+            -ex "continue" \
+            -ex "print i" -ex "print j" -ex "print nums[i]" -ex "print nums[j]" \
+            -ex "continue" \
+            -ex "print i" -ex "print j" \
+            ./bruteforce
+          echo "--- gdb_raw_trace_bruteforce.txt contents ---"
+          cat gdb_raw_trace_bruteforce.txt
+
+      - name: Generate trace_generated.json and merge into trace.json
+        id: gen
+        run: |
+          python3 scripts/parse_gdb_trace.py "$PROBLEM_PATH"
+          echo "--- trace_generated.json ---"
+          cat "$PROBLEM_PATH/trace_generated.json"
+
+          if [ -f "$PROBLEM_PATH/trace.json" ]; then
+            echo "--- merging into existing curated trace.json ---"
+            python3 scripts/merge_trace.py "$PROBLEM_PATH"
+            rm -f "$PROBLEM_PATH/trace_generated.json"
+            echo "merged=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "No existing trace.json for $PROBLEM_PATH -- this pipeline only"
+            echo "auto-merges into an ALREADY hand-curated trace.json (see"
+            echo "problems/GDB_TRACE_PIPELINE.md). Not auto-committing a brand-new"
+            echo "trace.json without human curation of discoveryQuestions /"
+            echo "predictionQuestions -- uploading trace_generated.json as a"
+            echo "workflow artifact for manual review instead."
+            echo "merged=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Commit and push regenerated traces
+        if: steps.gen.outputs.merged == 'true'
+        run: |
+          cd "$PROBLEM_PATH"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add gdb_raw_trace.txt trace.json
+          if [ -f gdb_raw_trace_bruteforce.txt ]; then
+            git add gdb_raw_trace_bruteforce.txt
+          fi
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore(trace): regenerate trace.json for ${PROBLEM_PATH} [skip ci]"
+            git push
+          fi
+
+      - name: Upload unmerged trace for manual review
+        if: steps.gen.outputs.merged == 'false'
+        uses: actions/upload-artifact@v4
+        with:
+          name: trace-generated-${{ github.run_id }}
+          path: ${{ env.PROBLEM_PATH }}/trace_generated.json
