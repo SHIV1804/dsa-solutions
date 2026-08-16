@@ -46,3 +46,5 @@ A markdown file explaining:
 
 ## Contribution Guidelines
 When adding new solutions, ensure you follow the directory structure and provide accurate metadata in `meta.md` to ensure compatibility with the portfolio visualizer.
+
+<!-- negative-trigger-test: this push must NOT fire generate-traces.yml -->
