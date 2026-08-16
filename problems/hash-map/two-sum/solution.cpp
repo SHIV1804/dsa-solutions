@@ -1,4 +1,4 @@
-#include <vector>
+#include <vector>  // auto-trace CI trigger test (harmless comment, no line-number shift)
 #include <unordered_map>
 
 class Solution {
