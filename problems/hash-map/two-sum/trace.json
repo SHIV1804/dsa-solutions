@@ -15,113 +15,52 @@
       "    }",
       "};"
     ],
-    "complexity": "O(n\u00b2)",
+    "complexity": "O(n²)",
     "steps": [
       {
-        "line": 4,
-        "variables": {
-          "i": 0,
-          "nums_i": 3
-        },
-        "highlightIndices": [
-          0
-        ],
-        "explanation": "Initialize outer loop with i = 0."
-      },
-      {
-        "line": 5,
-        "variables": {
-          "i": 0,
-          "j": 1,
-          "nums_i": 3,
-          "nums_j": 2
-        },
-        "highlightIndices": [
-          0,
-          1
-        ],
-        "explanation": "Initialize inner loop with j = 1."
-      },
-      {
         "line": 6,
         "variables": {
           "i": 0,
           "j": 1,
-          "sum": 5,
-          "target": 6
+          "nums_i": 3,
+          "nums_j": 2,
+          "sum": 5
         },
         "highlightIndices": [
           0,
           1
         ],
-        "explanation": "Check if 3 + 2 equals 6."
-      },
-      {
-        "line": 5,
-        "variables": {
-          "i": 0,
-          "j": 2,
-          "nums_i": 3,
-          "nums_j": 4
-        },
-        "highlightIndices": [
-          0,
-          2
-        ],
-        "explanation": "Initialize inner loop with j = 2."
+        "explanation": "Comparing nums[0] + nums[1] = 5 against the target."
       },
       {
         "line": 6,
         "variables": {
           "i": 0,
           "j": 2,
-          "sum": 7,
-          "target": 6
+          "nums_i": 3,
+          "nums_j": 4,
+          "sum": 7
         },
         "highlightIndices": [
           0,
           2
         ],
-        "explanation": "Check if 3 + 4 equals 6."
+        "explanation": "Comparing nums[0] + nums[2] = 7 against the target."
       },
       {
-        "line": 4,
-        "variables": {
-          "i": 1,
-          "nums_i": 2
-        },
-        "highlightIndices": [
-          1
-        ],
-        "explanation": "Initialize outer loop with i = 1."
-      },
-      {
-        "line": 5,
+        "line": 6,
         "variables": {
           "i": 1,
           "j": 2,
           "nums_i": 2,
-          "nums_j": 4
+          "nums_j": 4,
+          "sum": 6
         },
         "highlightIndices": [
           1,
           2
         ],
-        "explanation": "Initialize inner loop with j = 2."
-      },
-      {
-        "line": 6,
-        "variables": {
-          "i": 1,
-          "j": 2,
-          "sum": 6,
-          "target": 6
-        },
-        "highlightIndices": [
-          1,
-          2
-        ],
-        "explanation": "Check if 2 + 4 equals 6."
+        "explanation": "Comparing nums[1] + nums[2] = 6 against the target."
       },
       {
         "line": 7,
@@ -133,7 +72,7 @@
           1,
           2
         ],
-        "explanation": "Match found! 2 + 4 = 6."
+        "explanation": "Match found! nums[1] + nums[2] equals the target."
       }
     ]
   },
@@ -160,77 +99,16 @@
     "complexity": "O(n)",
     "steps": [
       {
-        "line": 7,
-        "variables": {},
-        "mapState": {},
-        "highlightIndices": [],
-        "explanation": "Initialize an empty hash map to store values and their indices."
-      },
-      {
-        "line": 8,
-        "variables": {
-          "i": 0,
-          "nums_i": 3
-        },
-        "mapState": {},
-        "highlightIndices": [
-          0
-        ],
-        "explanation": "Processing element at index 0: 3."
-      },
-      {
         "line": 9,
         "variables": {
           "i": 0,
           "nums_i": 3,
           "complement": 3
         },
-        "mapState": {},
         "highlightIndices": [
           0
         ],
-        "explanation": "Calculate complement: 6 - 3 = 3."
-      },
-      {
-        "line": 10,
-        "variables": {
-          "i": 0,
-          "complement": 3,
-          "found": false
-        },
-        "mapState": {},
-        "highlightIndices": [
-          0
-        ],
-        "explanation": "Check if 3 exists in the map."
-      },
-      {
-        "line": 13,
-        "variables": {
-          "i": 0,
-          "nums_i": 3
-        },
-        "mapState": {
-          "3": 0
-        },
-        "highlightIndices": [
-          0
-        ],
-        "explanation": "Store 3 with index 0 in the map for future lookups."
-      },
-      {
-        "line": 8,
-        "variables": {
-          "i": 1,
-          "nums_i": 2
-        },
-        "mapState": {
-          "3": 0
-        },
-        "highlightIndices": [
-          1
-        ],
-        "explanation": "Processing element at index 1: 2."
+        "explanation": "At i=0 (nums[i]=3), complement = 3."
       },
       {
         "line": 9,
@@ -239,58 +117,10 @@
           "nums_i": 2,
           "complement": 4
         },
-        "mapState": {
-          "3": 0
-        },
         "highlightIndices": [
           1
         ],
-        "explanation": "Calculate complement: 6 - 2 = 4."
-      },
-      {
-        "line": 10,
-        "variables": {
-          "i": 1,
-          "complement": 4,
-          "found": false
-        },
-        "mapState": {
-          "3": 0
-        },
-        "highlightIndices": [
-          1
-        ],
-        "explanation": "Check if 4 exists in the map."
-      },
-      {
-        "line": 13,
-        "variables": {
-          "i": 1,
-          "nums_i": 2
-        },
-        "mapState": {
-          "3": 0,
-          "2": 1
-        },
-        "highlightIndices": [
-          1
-        ],
-        "explanation": "Store 2 with index 1 in the map for future lookups."
-      },
-      {
-        "line": 8,
-        "variables": {
-          "i": 2,
-          "nums_i": 4
-        },
-        "mapState": {
-          "3": 0,
-          "2": 1
-        },
-        "highlightIndices": [
-          2
-        ],
-        "explanation": "Processing element at index 2: 4."
+        "explanation": "At i=1 (nums[i]=2), complement = 4."
       },
       {
         "line": 9,
@@ -299,30 +129,10 @@
           "nums_i": 4,
           "complement": 2
         },
-        "mapState": {
-          "3": 0,
-          "2": 1
-        },
         "highlightIndices": [
           2
         ],
-        "explanation": "Calculate complement: 6 - 4 = 2."
-      },
-      {
-        "line": 10,
-        "variables": {
-          "i": 2,
-          "complement": 2,
-          "found": true
-        },
-        "mapState": {
-          "3": 0,
-          "2": 1
-        },
-        "highlightIndices": [
-          2
-        ],
-        "explanation": "Check if 2 exists in the map."
+        "explanation": "At i=2 (nums[i]=4), complement = 2."
       },
       {
         "line": 11,
@@ -331,65 +141,85 @@
           "complement": 2,
           "matchIndex": 1
         },
-        "mapState": {
-          "3": 0,
-          "2": 1
-        },
         "highlightIndices": [
           1,
           2
         ],
-        "explanation": "Found complement 2 at index 1!"
+        "explanation": "Match found at i=2: complement 2 was already in the map at index 1."
       }
     ]
   },
   "discoveryQuestions": [
-    "The brute-force approach made two failed comparisons (3+2=5\u22606 and 3+4=7\u22606) before finding the answer. Why did it waste work on those checks?",
+    "The brute-force approach made two failed comparisons (3+2=5≠6 and 3+4=7≠6) before finding the answer. Why did it waste work on those checks?",
     "In the optimized approach, when i=2 (value 4), the complement is 2. The map already contains {3:0, 2:1}. Why does this allow us to find the answer immediately instead of re-scanning?",
     "What is the fundamental trade-off: what extra resource does the optimized solution consume that the brute-force solution does not?",
     "If the array were 1000 elements instead of 3, roughly how many comparisons would the brute-force approach make in the worst case versus the optimized approach?"
   ],
   "predictionQuestions": [
     {
-      "stepIndex": 2,
+      "stepIndex": 0,
       "phase": "bruteForce",
       "question": "The algorithm is checking if nums[0] + nums[1] equals 6. Given that nums = [3, 2, 4], what is 3 + 2? Will this match the target?",
-      "options": ["5 \u2014 No, it does not match", "6 \u2014 Yes, it matches", "7 \u2014 No, it does not match", "8 \u2014 No, it does not match"],
+      "options": [
+        "5 — No, it does not match",
+        "6 — Yes, it matches",
+        "7 — No, it does not match",
+        "8 — No, it does not match"
+      ],
       "correctOptionIndex": 0
     },
     {
-      "stepIndex": 4,
+      "stepIndex": 1,
       "phase": "bruteForce",
       "question": "The algorithm is checking if nums[0] + nums[2] equals 6. Given that nums = [3, 2, 4], what is 3 + 4? Will this match the target?",
-      "options": ["5 \u2014 No, it does not match", "6 \u2014 Yes, it matches", "7 \u2014 No, it does not match", "8 \u2014 No, it does not match"],
+      "options": [
+        "5 — No, it does not match",
+        "6 — Yes, it matches",
+        "7 — No, it does not match",
+        "8 — No, it does not match"
+      ],
       "correctOptionIndex": 2
     },
     {
-      "stepIndex": 7,
+      "stepIndex": 2,
       "phase": "bruteForce",
       "question": "The algorithm is now checking nums[1] + nums[2]. Given nums = [3, 2, 4], what is 2 + 4? Will this match the target of 6?",
-      "options": ["5 \u2014 No, it does not match", "6 \u2014 Yes, it matches!", "7 \u2014 No, it does not match", "8 \u2014 No, it does not match"],
+      "options": [
+        "5 — No, it does not match",
+        "6 — Yes, it matches!",
+        "7 — No, it does not match",
+        "8 — No, it does not match"
+      ],
       "correctOptionIndex": 1
     },
     {
-      "stepIndex": 3,
+      "stepIndex": 0,
       "phase": "optimized",
       "question": "The complement for nums[0]=3 is 3 itself. The map is currently empty. Will the algorithm find 3 in the map?",
-      "options": ["Yes", "No"],
+      "options": [
+        "Yes",
+        "No"
+      ],
       "correctOptionIndex": 1
     },
     {
-      "stepIndex": 7,
+      "stepIndex": 1,
       "phase": "optimized",
       "question": "The complement for nums[1]=2 is 4. The map currently contains {3:0}. Will the algorithm find 4 in the map?",
-      "options": ["Yes", "No"],
+      "options": [
+        "Yes",
+        "No"
+      ],
       "correctOptionIndex": 1
     },
     {
-      "stepIndex": 11,
+      "stepIndex": 2,
       "phase": "optimized",
       "question": "The complement for nums[2]=4 is 2. The map currently contains {3:0, 2:1}. Will the algorithm find 2 in the map?",
-      "options": ["Yes", "No"],
+      "options": [
+        "Yes",
+        "No"
+      ],
       "correctOptionIndex": 0
     }
   ]
