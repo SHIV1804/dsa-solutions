@@ -85,5 +85,52 @@
     ]
   },
   "discoveryQuestions": [],
-  "predictionQuestions": []
+  "predictionQuestions": [],
+  "bruteForce": {
+    "code": [
+      "class Solution {",
+      "public:",
+      "    std::vector<int> twoSum(std::vector<int>& nums, int target) {",
+      "        for (int i = 0; i < nums.size(); i++) {",
+      "            for (int j = i + 1; j < nums.size(); j++) {",
+      "                if (nums[i] + nums[j] == target) {",
+      "                    return {i, j};",
+      "                }",
+      "            }",
+      "        }",
+      "        return {};",
+      "    }",
+      "};"
+    ],
+    "complexity": "O(n²)",
+    "steps": [
+      {
+        "line": 6,
+        "variables": {
+          "i": 0,
+          "j": 1,
+          "nums_i": 2,
+          "nums_j": 7,
+          "sum": 9
+        },
+        "highlightIndices": [
+          0,
+          1
+        ],
+        "explanation": "Comparing nums[0] + nums[1] = 9 against the target."
+      },
+      {
+        "line": 7,
+        "variables": {
+          "i": 0,
+          "j": 1
+        },
+        "highlightIndices": [
+          0,
+          1
+        ],
+        "explanation": "Match found! nums[0] + nums[1] equals the target."
+      }
+    ]
+  }
 }

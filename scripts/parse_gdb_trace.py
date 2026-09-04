@@ -79,6 +79,10 @@ BREAKPOINT_MANIFESTS = {
         # print i / print j / print nums[i] / print nums[j]
         "vars_by_hit_order": ["i", "j", "nums_i", "nums_j"],
     },
+    ("problems/two-pointers/two-sum-ii-input-array-is-sorted", "bruteforce_driver.cpp"): {
+        # print i / print j / print nums[i] / print nums[j]
+        "vars_by_hit_order": ["i", "j", "nums_i", "nums_j"],
+    },
     ("problems/two-pointers/two-sum-ii-input-array-is-sorted", "driver.cpp"): {
         # print left / print right / print numbers[left] / print numbers[right] / print numbers[left]+numbers[right]
         "vars_by_hit_order": ["left", "right", "numbers_left", "numbers_right", "sum"],
@@ -91,6 +95,7 @@ FINAL_BREAKPOINT_MANIFESTS = {
     # print i / print complement / print (int)num_map[complement]
     ("problems/hash-map/two-sum", "solution.cpp"): ["i", "complement", "matchIndex"],
     ("problems/hash-map/two-sum", "bruteforce_driver.cpp"): ["i", "j"],
+    ("problems/two-pointers/two-sum-ii-input-array-is-sorted", "bruteforce_driver.cpp"): ["i", "j"],
     ("problems/two-pointers/two-sum-ii-input-array-is-sorted", "driver.cpp"): ["left", "right"],
 }
 

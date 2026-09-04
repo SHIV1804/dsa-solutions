@@ -1,0 +1,16 @@
+Breakpoint 1 at 0x1555: file bruteforce_driver.cpp, line 12.
+Breakpoint 2 at 0x158f: file bruteforce_driver.cpp, line 13.
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+
+Breakpoint 1, Solution::twoSum (this=0x7fffffffdf3b, nums=std::vector of length 4, capacity 4 = {...}, target=9) at bruteforce_driver.cpp:12
+12	                if (nums[i] + nums[j] == target) {
+$1 = 0
+$2 = 1
+$3 = 2
+$4 = 7
+
+Breakpoint 2, Solution::twoSum (this=0x7fffffffdf3b, nums=std::vector of length 4, capacity 4 = {...}, target=9) at bruteforce_driver.cpp:13
+13	                    return {i, j};
+$5 = 0
+$6 = 1
