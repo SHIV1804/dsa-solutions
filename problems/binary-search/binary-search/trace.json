@@ -1,0 +1,124 @@
+{
+  "bruteForce": {
+    "code": [
+      "int searchLinear(std::vector<int>& nums, int target) {",
+      "    for (int i = 0; i < nums.size(); i++) {",
+      "        if (nums[i] == target) return i;",
+      "    }",
+      "    return -1;",
+      "}"
+    ],
+    "complexity": "O(n)",
+    "steps": [
+      {
+        "line": 3,
+        "variables": { "i": 0, "value": -1 },
+        "highlightIndices": [0],
+        "explanation": "Check nums[0] = -1 against the target 9. The value is too small, so continue."
+      },
+      {
+        "line": 3,
+        "variables": { "i": 1, "value": 0 },
+        "highlightIndices": [1],
+        "explanation": "Check nums[1] = 0 against the target 9. The value does not match."
+      },
+      {
+        "line": 3,
+        "variables": { "i": 2, "value": 3 },
+        "highlightIndices": [2],
+        "explanation": "Check nums[2] = 3 against the target 9. The value does not match."
+      },
+      {
+        "line": 3,
+        "variables": { "i": 3, "value": 5 },
+        "highlightIndices": [3],
+        "explanation": "Check nums[3] = 5 against the target 9. The value does not match."
+      },
+      {
+        "line": 3,
+        "variables": { "i": 4, "value": 9, "found": true },
+        "highlightIndices": [4],
+        "explanation": "The linear scan finds the target at index 4 after checking each earlier value."
+      }
+    ]
+  },
+  "optimized": {
+    "code": [
+      "int search(std::vector<int>& nums, int target) {",
+      "    int low = 0;",
+      "    int high = nums.size() - 1;",
+      "    while (low <= high) {",
+      "        int mid = low + (high - low) / 2;",
+      "        if (nums[mid] == target) return mid;",
+      "        else if (nums[mid] < target) low = mid + 1;",
+      "        else high = mid - 1;",
+      "    }",
+      "    return -1;",
+      "}"
+    ],
+    "complexity": "O(log n)",
+    "steps": [
+      {
+        "line": 5,
+        "variables": { "low": 0, "high": 5, "mid": 2, "found": false },
+        "highlightIndices": [0, 1, 2, 3, 4, 5],
+        "explanation": "Start with the full sorted array. The midpoint is index 2, containing 3."
+      },
+      {
+        "line": 7,
+        "variables": { "low": 3, "high": 5, "mid": 2, "found": false },
+        "highlightIndices": [2, 3, 4, 5],
+        "explanation": "3 is less than the target 9, so discard the left half and move low to index 3."
+      },
+      {
+        "line": 5,
+        "variables": { "low": 3, "high": 5, "mid": 4, "found": false },
+        "highlightIndices": [3, 4, 5],
+        "explanation": "The remaining range is [3, 5]. Its midpoint is index 4, containing 9."
+      },
+      {
+        "line": 6,
+        "variables": { "low": 3, "high": 5, "mid": 4, "found": true },
+        "highlightIndices": [4],
+        "explanation": "Match found: nums[4] = 9, so return index 4."
+      }
+    ]
+  },
+  "discoveryQuestions": [
+    "Why is it safe to discard every value to the left of the midpoint when nums[mid] is less than the target?",
+    "How does halving the remaining range at each step produce O(log n) time complexity?"
+  ],
+  "predictionQuestions": [
+    {
+      "stepIndex": 0,
+      "phase": "optimized",
+      "question": "For nums = [-1, 0, 3, 5, 9, 12], what is the first midpoint index and value?",
+      "options": [
+        "Index 1, value 0",
+        "Index 2, value 3",
+        "Index 4, value 9",
+        "Index 5, value 12"
+      ],
+      "correctOptionIndex": 1
+    },
+    {
+      "stepIndex": 1,
+      "phase": "optimized",
+      "question": "Since the midpoint value 3 is less than target 9, which boundary changes?",
+      "options": [
+        "high becomes 1",
+        "low becomes 3",
+        "low becomes 0",
+        "The search stops"
+      ],
+      "correctOptionIndex": 1
+    },
+    {
+      "stepIndex": 2,
+      "phase": "optimized",
+      "question": "What value is at the next midpoint, index 4?",
+      "options": ["5", "9", "12", "3"],
+      "correctOptionIndex": 1
+    }
+  ]
+}
